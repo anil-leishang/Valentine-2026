@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For My Fiancee❤️</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif}
+body{
+  height:100vh;overflow:hidden;
+  background:radial-gradient(circle at top,#ff4d6d,#7a0015);
+  color:#fff;
+}
+
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+/* ❤️ VERTICAL DRIPPING CHAINS */
+.drip{
+  position:absolute;
+  top:-200vh;
+  display:flex;
+  flex-direction:column;
+  font-size:1.3rem;
+  opacity:0.18;
+  animation:dripFlow linear infinite;
+}
+
+.drip span{
+  display:block;
+  line-height:1.1;
+}
+
+/* per-column random fade */
+@keyframes dripFlow{
+  0%{
+    transform:translateY(0);
+    opacity:0;
+  }
+  10%{opacity:.18}
+  70%{
+    transform:translateY(var(--fade-start));
+    opacity:.18;
+  }
+  75%{
+    opacity:.06;
+  }
+  100%{
+    transform:translateY(220vh);
+    opacity:0;
+  }
+}
+
+
+/* 🌸 petals */
+.petal{
+  position:absolute;
+  font-size:42px;
+  animation:petalFall linear infinite;
+}
+@keyframes petalFall{
+  from{transform:translateY(-10vh) rotate(0)}
+  to{transform:translateY(110vh) rotate(360deg)}
+}
+
+/* 💗 melts */
+.melt{
+  position:absolute;
+  font-size:38px;
+  animation:melt linear infinite;
+}
+@keyframes melt{
+  from{transform:translateY(0);opacity:1}
+  to{transform:translateY(120vh);opacity:0}
+}
+
+/* ❤️ floats */
+.float{
+  position:absolute;
+  font-size:45px;
+  opacity:.9;
+  animation:float linear infinite;
+}
+@keyframes float{
+  from{transform:translateY(100vh) scale(.6)}
+  to{transform:translateY(-20vh) scale(1.3)}
+}
+
+.container{
+  position:relative;
+  z-index:3;
+  height:100%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.card{
+  background:rgba(255,255,255,.12);
+  backdrop-filter:blur(10px);
+  padding:40px 30px;
+  border-radius:25px;
+  max-width:420px;width:90%;
+  text-align:center;
+  box-shadow:0 0 40px hotpink;
+}
+
+h1{font-family:'Great Vibes',cursive;font-size:2.8rem}
+p{margin:20px 0;font-size:1.1rem}
+
+.buttons{display:flex;gap:15px;justify-content:center;flex-wrap:wrap}
+button{padding:12px 30px;border-radius:30px;border:none;font-size:1rem;cursor:pointer}
+.yes{background:#ff4d6d;color:#fff;box-shadow:0 0 20px #ff4d6d;animation:pulse 1.5s infinite}
+@keyframes pulse{50%{transform:scale(1.1)}}
+.no{background:#fff;color:#b00020}
+
+.final-heart{font-size:160px;animation:boom 1.5s ease}
+@keyframes boom{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+
+.music{
+  position:fixed;bottom:20px;right:20px;
+  width:50px;height:50px;border-radius:50%;
+  background:rgba(255,255,255,.25);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;z-index:5;font-size:22px
+}
+
+.music-label{
+  position:absolute;
+  right:calc(100% + 8px);
+  top:50%;
+  transform:translateY(-50%);
+  display:inline-flex;align-items:center;justify-content:center;
+  height:50px;
+  background:rgba(255,255,255,0.12);
+  color:#fff;
+  padding:6px 10px;
+  border-radius:12px;
+  font-size:14px;
+  white-space:nowrap;
+  pointer-events:none;
+  box-shadow:0 0 8px rgba(0,0,0,0.18);
+}
+
+/* 💥 heart splash */
+.heart-splash{
+  position:fixed;
+  pointer-events:none;
+  animation:splashOut 1.6s ease-out forwards;
+}
+
+@keyframes splashOut{
+  0%{transform:translate(0,0) scale(.4);opacity:1}
+  70%{transform:translate(var(--x),var(--y)) scale(1);opacity:.9}
+  100%{transform:translate(calc(var(--x)*1.15),calc(var(--y)*1.15)) scale(.2);opacity:0}
+}
+</style>
+</head>
+
+<body>
+
+<div class="bg" id="bg"></div>
+
+<audio id="music" loop preload="auto">
+  <source src="background.mp3" type="audio/mpeg">
+</audio>
+
+<audio id="yesSfx" preload="auto">
+  <source src="yes.mp3" type="audio/mpeg">
+</audio>
+
+<audio id="finalYesSfx" loop preload="auto">
+  <source src="final yes.mp3" type="audio/mpeg">
+</audio>
+
+<div class="music" id="musicBtn" onclick="toggleMusic()">
+  <span class="music-label" id="musicLabel">Music On 👉</span>
+  ❤️
+</div>
+
+<div class="container">
+  <div class="card" id="card"></div>
+</div>
+
+<script>
+const bg=document.getElementById("bg");
+const card=document.getElementById("card");
+const music=document.getElementById("music");
+const musicBtn=document.getElementById("musicBtn");
+let yesCount=0;
+
+function renderMain(){
+  yesCount=0;
+  card.innerHTML=`
+    <h1>Hey Martina… 💖</h1>
+    <p>I'm so glad you're mine!<br>Be my Valentine?</p>
+    <div class="buttons">
+      <button class="yes" onclick="yes();startMusic()">Yes ❤️</button>
+      <button class="no" onclick="renderMain()">No 🙄</button>
+    </div>`;
+  attachNoRun();
+}
+renderMain();
+
+/* ❤️ DRIPPING TEXT CHAINS */
+const dripSentence = "HAPPY VALENTINE’S DAY 💗 ";
+const DRIP_COLUMNS = 22;
+
+for(let i=0;i<DRIP_COLUMNS;i++){
+  const column=document.createElement("div");
+  column.className="drip";
+
+  column.style.left=(Math.random()*100)+"vw";
+  column.style.animationDuration=(8+Math.random()*6)+"s";
+  column.style.animationDelay=(-Math.random()*12)+"s";
+
+  // random fade point per column (70–75%)
+  const fade = (70 + Math.random()*5) * window.innerHeight / 100;
+  column.style.setProperty("--fade-start", fade+"px");
+
+  // make a LONG connected chain
+  const repeat = 18 + Math.floor(Math.random()*12);
+
+  for(let r=0;r<repeat;r++){
+    for(const line of dripSentence){
+      const s=document.createElement("span");
+      s.textContent=line;
+      column.appendChild(s);
+    }
+  }
+
+  bg.appendChild(column);
+}
+
+/* 🌸 petals */
+setInterval(()=>{
+  const p=document.createElement("div");
+  p.className="petal";
+  p.innerText="🌸";
+  p.style.left=Math.random()*100+"vw";
+  p.style.animationDuration=(6+Math.random()*6)+"s";
+  bg.appendChild(p);
+  setTimeout(()=>p.remove(),12000);
+},600);
+
+/* 💗 melts */
+setInterval(()=>{
+  const m=document.createElement("div");
+  m.className="melt";
+  m.innerText="💗";
+  m.style.left=Math.random()*100+"vw";
+  m.style.animationDuration=(5.5+Math.random()*2)+"s";
+  bg.appendChild(m);
+  setTimeout(()=>m.remove(),8000);
+},1300);
+
+/* ❤️ floats */
+setInterval(()=>{
+  const f=document.createElement("div");
+  f.className="float";
+  f.innerText="❤️";
+  f.style.left=Math.random()*100+"vw";
+  f.style.animationDuration=(4.5+Math.random()*2)+"s";
+  bg.appendChild(f);
+  setTimeout(()=>f.remove(),7500);
+},450);
+
+function attachNoRun(){
+  const no=document.querySelector('.no');
+  if(!no) return;
+  no.onmouseenter=()=>{
+    no.style.position='absolute';
+    no.style.left=Math.random()*70+'%';
+    no.style.top=Math.random()*70+'%';
+  };
+}
+
+function yes(){
+  yesCount++;
+  const msgs=["Are you sure? 🥺","Really really sure? 💓","No going back 😌","My heart is ready 🥰","Last yes… 😍"];
+  if(yesCount<=5){
+    document.getElementById("yesSfx").currentTime=0;
+    document.getElementById("yesSfx").play().catch(()=>{});
+    card.innerHTML=`<h1>${msgs[yesCount-1]}</h1>
+    <div class="buttons">
+      <button class="yes" onclick="yes()">Yes ❤️</button>
+      <button class="no" onclick="renderMain()">No 🙄</button>
+    </div>`;
+    attachNoRun();
+  }else{
+    document.getElementById("music").pause();
+    const finalYes = document.getElementById("finalYesSfx");
+    finalYes.volume = 0.1;
+    finalYes.currentTime = 0;
+    finalYes.play().catch(()=>{});
+    let startTime = Date.now();
+    const fadeInterval = setInterval(()=>{
+      const elapsed = (Date.now() - startTime) / 1000;
+      if(elapsed >= 2.5){
+        finalYes.volume = 0.7;
+        clearInterval(fadeInterval);
+      } else {
+        finalYes.volume = 0.1 + (0.6 * (elapsed / 2.5));
+      }
+    }, 30);
+    card.innerHTML=`
+      <div class="final-heart">💝</div>
+      <h1>Happy Valentine’s Day</h1>
+      <h1>Echanmacha🤍🫶🏻</h1>
+      <p><strong>I knew it you’ll say yes 💕</strong><br>
+      You are the best thing that’s ever been mine.</p>`;
+  }
+}
+
+function startMusic(){music.volume=.6;music.play().catch(()=>{})}
+
+function toggleMusic(){
+  music.paused?startMusic():music.pause();
+  const btn=musicBtn.getBoundingClientRect();
+  const cx=btn.left+btn.width/2;
+  const cy=btn.top+btn.height/2;
+  const hearts=["❤️","💖","💗","💕","💘","💞"];
+
+  for(let i=0;i<50;i++){
+    const h=document.createElement("div");
+    h.className="heart-splash";
+    h.innerText=hearts[Math.floor(Math.random()*hearts.length)];
+    const a=Math.random()*Math.PI*2;
+    const r=120+Math.random()*80;
+    h.style.left=cx+"px";
+    h.style.top=cy+"px";
+    h.style.fontSize=(20+Math.random()*18)+"px";
+    h.style.setProperty("--x",Math.cos(a)*r+"px");
+    h.style.setProperty("--y",Math.sin(a)*r+"px");
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),1700);
+  }
+}
+</script>
+</body>
+</html>
